@@ -1,19 +1,19 @@
 entity Produto {
-	nomeProduto String 
-	descricaoProduto String 
-	precoProduto Integer
-	linkFotoProduto String 
-	dataCadastroProduto LocalDate
+	nome String 
+	descricao String 
+	preco Float
+	linkFoto String 
+	dataCadastro LocalDate
 	estado Estado
 	totalEstoque Integer
 }
 
 entity Cliente {
-    nomeCliente String 
+    nome String 
     telefone Integer 
-    email String 
-    login User 
-    senha User 
+    email String unique
+    login String unique 
+    senha String 
     cep Integer 
     logradouro String 
     bairro String 
@@ -21,24 +21,28 @@ entity Cliente {
 }
 
 entity Pedido {
-    dataCadastroPedido ZonedDateTime 
-    listaPedido String
+    dataCadastro ZonedDateTime 
+    lista String
     pagamento Pagamento
-    valorTotalPedido Float
+    valorTotal Float
     valorTotalTroco Float
-    statusPedido StatusPedido
+    status StatusPedido
     observacaoEntrega String
-    nomeEntregador String
-	
+    nomePessoaReceber String	
+}
+
+entity ProdutoPedido{
+	quantidade Integer
+	preco Double
 }
 
 entity Entregador {
-    nomeEntregador String 
+    nome String 
     placa Float 
     latitude Float 
     longitude Float
     cpf Integer 
-    linkFotoEntregador String
+    linkFoto String
 
 }
 
@@ -55,11 +59,13 @@ enum StatusPedido {
 }
 
 relationship OneToMany {
-	Cliente to Pedido{cliente(nomeCliente)}
-	Entregador {pedidos} to Pedido{entregador}
+	Cliente to Pedido{cliente(nome)}
+	Entregador{pedidos} to Pedido{entregador(nome)}
+	Produto to ProdutoPedido{produto(nome)}
+	Pedido{produtosPedidos} to ProdutoPedido{pedido}
 }
 
 relationship ManyToMany {
 	Cliente {entregadores} to Entregador {clientes}
-	Cliente {produtos} to Produto {clientes}
+	
 }
